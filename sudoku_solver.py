@@ -1,169 +1,78 @@
 #Sudoku Solver
 #===================
 #Constants:
+#Example Starting Board:
+# a1 a2 a3 | a4 a5 a6 | a7 a8 a9
+# b1 b2 b3 | b4 b5 b6 | b7 b8 b9
+# c1 c2 c3 | c4 c5 c6 | c7 c8 c9
+#---------------------------------
+# d1 d2 d3 | d4 d5 d6 | d7 d8 d9
+# e1 e2 e3 | e4 e5 e6 | e7 e8 e9
+# f1 f2 f3 | f4 f5 f6 | f7 f8 f9
+#---------------------------------
+# g1 g2 g3 | g4 g5 g6 | g7 g8 g9
+# h1 h2 h3 | h4 h5 h6 | h7 h8 h9
+# i1 i2 i3 | i4 i5 i6 | i7 i8 i9
 
-#Sudoku Board Drawn
-# 0 4 7 | 0 2 1 | 6 8 9
-# 0 8 1 | 9 0 0 | 0 0 0
-# 0 6 3 | 8 4 5 | 2 0 7
-#-----------------------
-# 0 0 0 | 7 5 0 | 9 2 0
-# 0 7 0 | 0 3 2 | 0 0 0
-# 8 0 0 | 0 0 0 | 0 0 3
-#-----------------------
-# 4 9 0 | 0 0 0 | 1 0 2
-# 7 0 0 | 0 0 4 | 8 3 0
-# 0 2 0 | 5 0 0 | 0 0 0
-
-
-# 5 4 7 | 3 2 1 | 6 8 9
+#sudoku_board is list of numbers
+#This is a list of numbers which represents the sudoku board.
+#Zero values represent an empty cell
+#Each row below, or every 9 numbers of list, represent 1 3x3 square of the sudoku puzzle
+#the numbers go from top left to bottom right of each 3x3 square, then top left to bottom right of puzzle
+# sudoku_board = [
+#   a1,a2,a3,b1,b2,b3,c1,c2,c3,
+#   a4,a5,a6,b4,b5,b6,c4,c5,c6,
+#   a7,a8,a9,b7,b8,b9,c7,c8,c9,
+#   d1,d2,d3,e1,e2,e3,f1,f2,f3,
+#   d4,d5,d6,e4,e5,e6,f4,f5,f6,
+#   d7,d8,d9,e7,e8,e9,f7,f8,f9,
+#   g1,g2,g3,h1,h2,h3,i1,i2,i3,
+#   g4,g5,g6,h4,h5,h6,i4,i5,i6,
+#   g7,g8,g9,h7,h8,h9,i7,i8,i9,
+#     ]
 
 sudoku_board = [
-    5,4,7,0,8,1,0,6,3,
-    0,2,1,9,0,0,8,4,5,
-    6,8,9,0,0,0,2,0,7,
-    0,0,0,0,7,0,8,0,0,
-    7,5,0,0,3,2,0,0,0,
-    9,2,0,0,0,0,0,0,3,
-    4,9,0,7,0,0,0,2,0,
-    0,0,0,0,0,4,5,0,0,
-    1,0,2,8,3,0,0,0,0
+    3,0,5,4,9,0,6,0,0,
+    4,0,2,7,6,0,1,0,3,
+    0,6,0,1,0,8,2,4,5,
+    0,0,3,9,6,0,0,8,1,
+    9,0,0,0,5,8,3,0,4,
+    5,8,0,7,0,3,0,9,2,
+    0,5,0,2,0,0,1,4,9,
+    6,0,1,5,4,9,0,0,7,
+    4,0,0,0,7,0,3,0,6
     ]
-
-
-
-sudoku_board1 = [
-    1,4,7,1,8,1,1,6,3,
-    0,2,1,9,0,0,8,4,5,
-    6,8,9,0,0,0,2,0,7,
-    0,0,0,0,7,0,8,0,0,
-    7,5,0,0,3,2,0,0,0,
-    9,2,0,0,0,0,0,0,3,
-    4,9,0,7,0,0,0,2,0,
-    0,0,0,0,0,4,5,0,0,
-    1,0,2,8,3,0,0,0,0
-    ]
-sudoku_board2 = [
-    1,4,7,0,8,1,0,6,3,
-    0,2,1,9,0,0,8,4,5,
-    6,8,9,0,0,0,2,0,7,
-    0,0,0,0,7,0,8,0,0,
-    7,5,0,0,3,2,0,0,0,
-    9,2,0,0,0,0,0,0,3,
-    4,9,0,7,0,0,0,2,0,
-    0,0,0,0,0,4,5,0,0,
-    1,0,2,8,3,0,0,0,0
-    ]
-sudoku_board3 = [ #final completed board
-     5,4,7,2,8,1,9,6,3,
-     3,2,1,9,7,6,8,4,5,
-     6,8,9,3,5,4,2,1,7,
-     6,3,4,1,7,9,8,5,2,
-     7,5,8,4,3,2,1,6,9,
-     9,2,1,5,6,8,7,4,3,
-     4,9,5,7,1,6,3,2,8,
-     6,8,3,2,9,4,5,1,7,
-     1,7,2,8,3,5,4,9,6
-     ]
-
 #===================
-#Data Definitions:
 
-#test_number is integer (1 to 9)
-#This is the current tested number
-#Examples
-# test_number1 = 1 #first tested number
-# test_number2 = 5 #middle tested number
-# test_number3 = 9 #last tested number
-
-#current_sudoku_board is list of lists
-#This is a list of lists which represents the sudoku board.
-#Each inner list represents a 3x3 square on the board
-#Zero values represent an empty cell
-
-#Example Starting Board:
-# 0 4 7 | 0 2 1 | 6 8 9
-# 0 8 1 | 9 0 0 | 0 0 0
-# 0 6 3 | 8 4 5 | 2 0 7
-#-----------------------
-# 0 0 0 | 7 5 0 | 9 2 0
-# 0 7 0 | 0 3 2 | 0 0 0
-# 8 0 0 | 0 0 0 | 0 0 3
-#-----------------------
-# 4 9 0 | 0 0 0 | 1 0 2
-# 7 0 0 | 0 0 4 | 8 3 0
-# 0 2 0 | 5 0 0 | 0 0 0
-# current_sudoku_board1 = [ #first test in first cell
-#     [1,4,7,0,8,1,0,6,3],
-#     [0,2,1,9,0,0,8,4,5],
-#     [6,8,9,0,0,0,2,0,7],
-#     [0,0,0,0,7,0,8,0,0],
-#     [7,5,0,0,3,2,0,0,0],
-#     [9,2,0,0,0,0,0,0,3],
-#     [4,9,0,7,0,0,0,2,0],
-#     [0,0,0,0,0,4,5,0,0],
-#     [1,0,2,8,3,0,0,0,0]
-#     ]
-#
-# current_sudoku_board2 = [ #middle test
-#     [5,4,7,2,8,1,9,6,3],
-#     [3,2,1,9,7,6,8,4,5],
-#     [6,8,9,3,5,4,2,1,7],
-#     [6,3,4,1,7,9,8,5,2],
-#     [7,5,8,4,3,2,1,6,9],
-#     [9,2,1,3,0,0,0,0,3],
-#     [4,9,0,7,0,0,0,2,0],
-#     [0,0,0,0,0,4,5,0,0],
-#     [1,0,2,8,3,0,0,0,0]
-#     ]
-#
-# current_sudoku_board3 = [ #final completed board
-#     [5,4,7,2,8,1,9,6,3],
-#     [3,2,1,9,7,6,8,4,5],
-#     [6,8,9,3,5,4,2,1,7],
-#     [6,3,4,1,7,9,8,5,2],
-#     [7,5,8,4,3,2,1,6,9],
-#     [9,2,1,5,6,8,7,4,3],
-#     [4,9,5,7,1,6,3,2,8],
-#     [6,8,3,2,9,4,5,1,7],
-#     [1,7,2,8,3,5,4,9,6]
-#     ]
-#Answer
-# 5 4 7 | 3 2 1 | 6 8 9
-# 2 8 1 | 9 7 6 | 3 5 4
-# 9 6 3 | 8 4 5 | 2 1 7
-#-----------------------
-# 6 3 4 | 7 5 8 | 9 2 1
-# 1 7 9 | 4 3 2 | 5 6 8
-# 8 5 2 | 1 6 9 | 7 4 3
-#-----------------------
-# 4 9 5 | 6 8 3 | 1 7 2
-# 7 1 6 | 2 9 4 | 8 3 5
-# 3 2 8 | 5 1 7 | 4 9 6
-
-
-#===================
 #Functions:
 
-def is_within_sudoku_rules(input):
-    # make it >0
-    natural_numbers_list = list(filter(lambda x: x > 0, input))
-    # remove duplicates
-    set_list = list(set(natural_numbers_list))
-    # if natural_numbers_list == set_list, no natural numbers duplicates
-    return natural_numbers_list == set_list
+def is_within_sudoku_rules(list_of_numbers):
+    #function to determine whether a list of numbers meets the sudoku rule criteria
+    #of all numbers from 1-9 being unique (zeros not included)
+    #Input: List of numbers
+    #Output: Boolean
+    natural_numbers_list = list(filter(lambda x: x > 0, list_of_numbers)) #list of natural numbers
+    set_list = list(set(natural_numbers_list)) # remove duplicates
+    # if length of natural_numbers_list == length of set_list, no natural numbers duplicates
+    return len(natural_numbers_list) == len(set_list)
 
 def check_square(current_index, sudoku_board):
-    #Function that takes the current index and current sudoku board and outputs
-    #a boolean stating whether the rules have been met (True) or not (False)
+    #States whether the sudoku rules have been met in a 3x3 square
+    #Input: current_index as Number, sudoku_board as list of list_of_numbers
+    #Output: Boolean
     remainder = current_index % 9
     #take numbers either side - determined by remainder
-    square_list = [sudoku_board[i] for i in list(range(current_index-remainder, current_index+(9-remainder)))]
+    first_index = current_index-remainder
+    last_index = current_index+(9-remainder)
+    square_list = [sudoku_board[i] for i in list(range(first_index, last_index))]
     #check if rules have been met
     return(is_within_sudoku_rules(square_list))
 
 def check_row(current_index, sudoku_board):
-    init_row_index_num = [ 0,1,2,9,10,11,18,19,20]
+    #States whether the sudoku rules have been met in a row
+    #Input: current_index as Number, sudoku_board as list of list_of_numbers
+    #Output: Boolean
+    init_row_index_num = [0,1,2,9,10,11,18,19,20]
     remainder = current_index % 9
 
     if remainder in [0,1,2] and current_index<=26:
@@ -190,6 +99,9 @@ def check_row(current_index, sudoku_board):
     return(is_within_sudoku_rules(row_list))
 
 def check_col(current_index, sudoku_board):
+    #States whether the sudoku rules have been met in a column
+    #Input: current_index as Number, sudoku_board as list of list_of_numbers
+    #Output: Boolean
 
     #get index of number calculate remainder of index when divided by 9
     remainder_27 = current_index % 27
@@ -221,30 +133,21 @@ def check_col(current_index, sudoku_board):
 #===================
 #Algorithm:
 #Find all zero cells
-
 zero_cells = [i for i, e in enumerate(sudoku_board) if e == 0]
 
-if len(zero_cells) == 0:
-    not_complete = False
-else:
-    not_complete = True
-
-current_zero_index = 0
+not_complete = True #Process isn't complete, when it is this changes to False and process ends
+current_zero_index = 0 #Index for zero/unknown number list
 
 while not_complete:
-
     current_index = zero_cells[current_zero_index]
 
-    #add 1 to cell
-    sudoku_board[current_index] += 1
+    sudoku_board[current_index] += 1 #add 1 to cell
 
     #check rules are met
-    square_rules_met = check_square(current_index, sudoku_board)
-    row_rules_met    = check_row(current_index, sudoku_board)
-    col_rules_met    = check_col(current_index, sudoku_board)
-
-    #Check rules met for 3x3, row and column
-    rules_met = square_rules_met and row_rules_met and col_rules_met
+    square_rules_met = check_square(current_index, sudoku_board)     #3x3
+    row_rules_met    = check_row(current_index, sudoku_board)        #row
+    col_rules_met    = check_col(current_index, sudoku_board)        #column
+    rules_met = square_rules_met and row_rules_met and col_rules_met #combined
 
     #If rules met...
     if rules_met:
@@ -261,3 +164,5 @@ while not_complete:
             sudoku_board[current_index] = 0
             current_zero_index -= 1
         #If not 9, leave things as is and repeat steps above
+
+print(sudoku_board)
