@@ -45,6 +45,18 @@ sudoku_board = [
     6,0,1,5,4,9,0,0,7,
     4,0,0,0,7,0,3,0,6
     ]
+
+sudoku_board = [
+    0,7,0,5,1,0,0,8,0,
+    0,0,0,4,2,0,3,0,0,
+    0,0,9,6,0,0,7,0,0,
+    0,0,8,0,2,3,4,0,0,
+    0,0,1,0,8,0,9,0,0,
+    3,7,0,0,4,0,1,0,0,
+    9,6,2,0,0,0,7,0,0,
+    8,0,0,0,1,0,2,0,3,
+    0,3,0,4,0,0,0,9,6
+    ]
 #===================
 
 #Functions:
@@ -54,6 +66,7 @@ def is_within_sudoku_rules(list_of_numbers):
     #of all numbers from 1-9 being unique (zeros not included)
     #Input: List of numbers
     #Output: Boolean
+
     natural_numbers_list = list(filter(lambda x: x > 0, list_of_numbers)) #list of natural numbers
     set_list = list(set(natural_numbers_list)) # remove duplicates
     # if length of natural_numbers_list == length of set_list, no natural numbers duplicates
@@ -63,6 +76,7 @@ def check_square(current_index, sudoku_board):
     #States whether the sudoku rules have been met in a 3x3 square
     #Input: current_index as Number, sudoku_board as list of list_of_numbers
     #Output: Boolean
+
     remainder = current_index % 9
     #take numbers either side - determined by remainder
     first_index = current_index-remainder
@@ -75,6 +89,7 @@ def check_row(current_index, sudoku_board):
     #States whether the sudoku rules have been met in a row
     #Input: current_index as Number, sudoku_board as list of list_of_numbers
     #Output: Boolean
+
     init_row_index_num = [0,1,2,9,10,11,18,19,20]
     remainder = current_index % 9
 
@@ -142,30 +157,39 @@ not_complete = True #Process isn't complete, when it is this changes to False an
 current_zero_index = 0 #Index for zero/unknown number list
 
 while not_complete:
+# for i in range(1,1000):
+
     current_index = zero_cells[current_zero_index]
+    print('current_index: ', current_index)
 
-    sudoku_board[current_index] += 1 #add 1 to cell
+    if sudoku_board[current_index]<9:
+        sudoku_board[current_index] += 1 #add 1 to cell
 
-    #check rules are met
-    square_rules_met = check_square(current_index, sudoku_board)     #3x3
-    row_rules_met    = check_row(current_index, sudoku_board)        #row
-    col_rules_met    = check_col(current_index, sudoku_board)        #column
-    rules_met = square_rules_met and row_rules_met and col_rules_met #combined
+        print('cell value: ', sudoku_board[current_index])
 
-    #If rules met...
-    if rules_met:
-        #check if finished.
-        if current_index == max(zero_cells):
-            not_complete = False
-        #If not finished, move to next cell.
+        #check rules are met
+        square_rules_met = check_square(current_index, sudoku_board)     #3x3
+        row_rules_met    = check_row(current_index, sudoku_board)        #row
+        col_rules_met    = check_col(current_index, sudoku_board)        #column
+        rules_met = square_rules_met and row_rules_met and col_rules_met #combined
+        print('rules_met: ', rules_met)
+        #If rules met...
+        if rules_met:
+            #check if finished.
+            if current_index == max(zero_cells):
+                not_complete = False
+            #If not finished, move to next cell.
+            else:
+                current_zero_index += 1
+        #If rules not met...
         else:
-            current_zero_index += 1
-    #If rules not met...
+            #check if value is 9. If 9, make zero and move to previous number (current_zero_index - 1)
+            if sudoku_board[current_index] >= 9:
+                sudoku_board[current_index] = 0
+                current_zero_index -= 1
+            #If not 9, leave things as is and repeat steps above
     else:
-        #check if value is 9. If 9, make zero and move to previous number (current_zero_index - 1)
-        if sudoku_board[current_index] == 9:
-            sudoku_board[current_index] = 0
-            current_zero_index -= 1
-        #If not 9, leave things as is and repeat steps above
+        sudoku_board[current_index] = 0
+        current_zero_index -= 1
 
 print(sudoku_board)
