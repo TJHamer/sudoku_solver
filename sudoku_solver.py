@@ -31,6 +31,7 @@ sudoku_board = [
     ]
 
 
+
 sudoku_board1 = [
     1,4,7,1,8,1,1,6,3,
     0,2,1,9,0,0,8,4,5,
@@ -152,17 +153,6 @@ def is_within_sudoku_rules(input):
     # if natural_numbers_list == set_list, no natural numbers duplicates
     return natural_numbers_list == set_list
 
-#Find next instance of Zero
-def find_zero(csb):
-    #Find next instance of Zero
-    #Input = current sudoku Board
-    #Output = index position of next zero, where zero is at sudoku_board[Output]
-    if 0 in csb:
-        index = csb.index(0)
-        return(index)
-    else:
-        return(999)
-
 def check_square(current_index, sudoku_board):
     #Function that takes the current index and current sudoku board and outputs
     #a boolean stating whether the rules have been met (True) or not (False)
@@ -230,34 +220,44 @@ def check_col(current_index, sudoku_board):
     return(is_within_sudoku_rules(col_list))
 #===================
 #Algorithm:
-#Take initial Board
+#Find all zero cells
 
-current_index = find_zero(sudoku_board)
+zero_cells = [i for i, e in enumerate(sudoku_board) if e == 0]
 
-#add 1 to cell
-sudoku_board[current_index] += 1
+if len(zero_cells) == 0:
+    not_complete = False
+else:
+    not_complete = True
 
-#check rules are met
-#Identify which 3x3 to check
-#find remainder of index
-square_rules_met = check_square(current_index, sudoku_board)
+current_zero_index = 0
 
-#Identify which row to check
-row_rules_met = check_row(current_index, sudoku_board)
+while not_complete:
 
-#identify which column to check
-col_rules_met = check_col(current_index, sudoku_board)
-#Check rules met for 3x3, row and column
-rules_met = square_rules_met and row_rules_met and col_rules_met
+    current_index = zero_cells[current_zero_index]
 
-#if 3x3, row and column are all fine, move to next cell and add 1...
-#if rules met, move to next cell
+    #add 1 to cell
+    sudoku_board[current_index] += 1
 
+    #check rules are met
+    square_rules_met = check_square(current_index, sudoku_board)
+    row_rules_met    = check_row(current_index, sudoku_board)
+    col_rules_met    = check_col(current_index, sudoku_board)
 
-#if not, add 1 to cell. Repeat above
+    #Check rules met for 3x3, row and column
+    rules_met = square_rules_met and row_rules_met and col_rules_met
 
-
-
-
-
-#if number gets to 9 without resolution, go to previous number and add 1
+    #If rules met...
+    if rules_met:
+        #check if finished.
+        if current_index == max(zero_cells):
+            not_complete = False
+        #If not finished, move to next cell.
+        else:
+            current_zero_index += 1
+    #If rules not met...
+    else:
+        #check if value is 9. If 9, make zero and move to previous number (current_zero_index - 1)
+        if sudoku_board[current_index] == 9:
+            sudoku_board[current_index] = 0
+            current_zero_index -= 1
+        #If not 9, leave things as is and repeat steps above
