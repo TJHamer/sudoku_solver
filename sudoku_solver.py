@@ -1,4 +1,7 @@
 #Sudoku Solver
+#A program to solve a sudoku puzzle
+#Enter a sudoku puzzle, run code and it will produce an output of a list of numbers
+#which can be interpreted as the final result
 #===================
 #Constants:
 #Example Starting Board:
