@@ -16,10 +16,10 @@
 # 0 2 0 | 5 0 0 | 0 0 0
 
 
-
+# 5 4 7 | 3 2 1 | 6 8 9
 
 sudoku_board = [
-    0,4,7,0,8,1,0,6,3,
+    5,4,7,0,8,1,0,6,3,
     0,2,1,9,0,0,8,4,5,
     6,8,9,0,0,0,2,0,7,
     0,0,0,0,7,0,8,0,0,
@@ -182,35 +182,36 @@ square_list = [sudoku_board[i] for i in list(range(current_index-remainder, curr
 square_rules_met = is_within_sudoku_rules(square_list)
 
     #Identify which row to check
-        #if remainder of index is 0,1,2
-            # if index>26
-            # elif index>53
-            # else
-        #elif remainder of index is 3,4,5
-            # if index>26
-            # elif index>53
-            # else
-        #elif remainder of index is 6,7,8
-            # if index>26
-            # elif index>53
-            # else
-        #row_rules_met = is_within_sudoku_rules(row_list)
+init_row_index_num = [ 0,1,2,9,10,11,18,19,20]
 
-    #identify which column to check
-    #get index of number calculate remainder of index when divided by 9
-    #index numbers for columns
-    #  0,  3,  6, 27, 30, 33, 54, 57, 60 #0,3,6
-    #  1,  4,  7, 28, 31, 34, 55, 58, 61 #1,4,7
-    #  2,  5,  8, 29, 32, 35, 56, 59, 62
-    #  9, 12, 15, 36, 39, 42, 63, 66, 69
-    # 10, 13, 16, 37, 40, 43, 64, 67, 70
-    # 11, 14, 17, 38, 41, 44, 65, 68, 71
-    # 18, 21, 24, 45, 48, 51, 72, 75, 78
-    # 19, 22, 25, 46, 49, 52, 73, 76, 79
-    # 20, 23, 26, 47, 50, 53, 74, 77, 80
+if remainder in [0,1,2] and current_index<=26:
+    row_index_num = [x+0 for x in init_row_index_num]
+elif remainder in [0,1,2] and current_index <=53:
+    row_index_num = [x+27 for x in init_row_index_num]
+elif remainder in [0,1,2]:
+    row_index_num = [x+54 for x in init_row_index_num]
+elif remainder in [3,4,5] and current_index<=26:
+    row_index_num = [x+1 for x in init_row_index_num]
+elif remainder in [3,4,5] and current_index <=53:
+    row_index_num = [x+28 for x in init_row_index_num]
+elif remainder in [3,4,5]:
+    row_index_num = [x+55 for x in init_row_index_num]
+elif remainder in [6,7,8] and current_index<=26:
+    row_index_num = [x+2 for x in init_row_index_num]
+elif remainder in [6,7,8] and current_index<=53:
+    row_index_num = [x+29 for x in init_row_index_num]
+elif remainder in [6,7,8]:
+    row_index_num = [x+56 for x in init_row_index_num]
 
+row_list = [sudoku_board[i] for i in row_index_num]
+
+row_rules_met = is_within_sudoku_rules(row_list)
+
+#identify which column to check
+#get index of number calculate remainder of index when divided by 9
 remainder_27 = current_index % 27
 
+#index numbers for columns
 if remainder_27 in [0,3,6]:
     col_index_num = [ 0,  3,  6, 27, 30, 33, 54, 57, 60]
 elif remainder_27 in [1,4,7]:
@@ -236,7 +237,7 @@ col_list = [sudoku_board[i] for i in col_index_num]
 col_rules_met = is_within_sudoku_rules(col_list)
 
 #Check rules met for 3x3, row and column
-# rules_met = square_rules_met & row_rules_met & col_rules_met
+rules_met = square_rules_met and row_rules_met and col_rules_met
 
 #if rules met, move to next cell
 
