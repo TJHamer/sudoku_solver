@@ -152,10 +152,6 @@ def is_within_sudoku_rules(input):
     # if natural_numbers_list == set_list, no natural numbers duplicates
     return natural_numbers_list == set_list
 
-#===================
-#Algorithm:
-#Take initial Board
-
 #Find next instance of Zero
 def find_zero(csb):
     #Find next instance of Zero
@@ -167,78 +163,94 @@ def find_zero(csb):
     else:
         return(999)
 
+def check_square(current_index, sudoku_board):
+    #Function that takes the current index and current sudoku board and outputs
+    #a boolean stating whether the rules have been met (True) or not (False)
+    remainder = current_index % 9
+    #take numbers either side - determined by remainder
+    square_list = [sudoku_board[i] for i in list(range(current_index-remainder, current_index+(9-remainder)))]
+    #check if rules have been met
+    return(is_within_sudoku_rules(square_list))
+
+def check_row(current_index, sudoku_board):
+    init_row_index_num = [ 0,1,2,9,10,11,18,19,20]
+    remainder = current_index % 9
+
+    if remainder in [0,1,2] and current_index<=26:
+        row_index_num = [x+0 for x in init_row_index_num]
+    elif remainder in [0,1,2] and current_index <=53:
+        row_index_num = [x+27 for x in init_row_index_num]
+    elif remainder in [0,1,2]:
+        row_index_num = [x+54 for x in init_row_index_num]
+    elif remainder in [3,4,5] and current_index<=26:
+        row_index_num = [x+3 for x in init_row_index_num]
+    elif remainder in [3,4,5] and current_index <=53:
+        row_index_num = [x+30 for x in init_row_index_num]
+    elif remainder in [3,4,5]:
+        row_index_num = [x+57 for x in init_row_index_num]
+    elif remainder in [6,7,8] and current_index<=26:
+        row_index_num = [x+6 for x in init_row_index_num]
+    elif remainder in [6,7,8] and current_index<=53:
+        row_index_num = [x+33 for x in init_row_index_num]
+    elif remainder in [6,7,8]:
+        row_index_num = [x+60 for x in init_row_index_num]
+
+    row_list = [sudoku_board[i] for i in row_index_num]
+
+    return(is_within_sudoku_rules(row_list))
+
+def check_col(current_index, sudoku_board):
+
+    #get index of number calculate remainder of index when divided by 9
+    remainder_27 = current_index % 27
+
+    #index numbers for columns
+    if remainder_27 in [0,3,6]:
+        col_index_num = [ 0,  3,  6, 27, 30, 33, 54, 57, 60]
+    elif remainder_27 in [1,4,7]:
+        col_index_num = [ 1,  4,  7, 28, 31, 34, 55, 58, 61]
+    elif remainder_27 in [2,5,8]:
+        col_index_num = [ 2,  5,  8, 29, 32, 35, 56, 59, 62]
+    elif remainder_27 in [9,12,15]:
+        col_index_num = [ 9, 12, 15, 36, 39, 42, 63, 66, 69]
+    elif remainder_27 in [10,13,16]:
+        col_index_num = [10, 13, 16, 37, 40, 43, 64, 67, 70]
+    elif remainder_27 in [11,14,17]:
+        col_index_num = [11, 14, 17, 38, 41, 44, 65, 68, 71]
+    elif remainder_27 in [18,21,24]:
+        col_index_num = [18, 21, 24, 45, 48, 51, 72, 75, 78]
+    elif remainder_27 in [19,22,25]:
+        col_index_num = [19, 22, 25, 46, 49, 52, 73, 76, 79]
+    elif remainder_27 in [20,23,26]:
+        col_index_num = [20, 23, 26, 47, 50, 53, 74, 77, 80]
+
+    col_list = [sudoku_board[i] for i in col_index_num]
+
+    #check if rules have been met
+    return(is_within_sudoku_rules(col_list))
+#===================
+#Algorithm:
+#Take initial Board
+
 current_index = find_zero(sudoku_board)
 
 #add 1 to cell
 sudoku_board[current_index] += 1
 
-#if 3x3, row and column are all fine, move to next cell and add 1...
+#check rules are met
 #Identify which 3x3 to check
 #find remainder of index
-remainder = current_index % 9
-#take numbers either side - determined by remainder
-square_list = [sudoku_board[i] for i in list(range(current_index-remainder, current_index+(9-remainder)))]
-#check if rules have been met
-square_rules_met = is_within_sudoku_rules(square_list)
+square_rules_met = check_square(current_index, sudoku_board)
 
-    #Identify which row to check
-init_row_index_num = [ 0,1,2,9,10,11,18,19,20]
-
-if remainder in [0,1,2] and current_index<=26:
-    row_index_num = [x+0 for x in init_row_index_num]
-elif remainder in [0,1,2] and current_index <=53:
-    row_index_num = [x+27 for x in init_row_index_num]
-elif remainder in [0,1,2]:
-    row_index_num = [x+54 for x in init_row_index_num]
-elif remainder in [3,4,5] and current_index<=26:
-    row_index_num = [x+1 for x in init_row_index_num]
-elif remainder in [3,4,5] and current_index <=53:
-    row_index_num = [x+28 for x in init_row_index_num]
-elif remainder in [3,4,5]:
-    row_index_num = [x+55 for x in init_row_index_num]
-elif remainder in [6,7,8] and current_index<=26:
-    row_index_num = [x+2 for x in init_row_index_num]
-elif remainder in [6,7,8] and current_index<=53:
-    row_index_num = [x+29 for x in init_row_index_num]
-elif remainder in [6,7,8]:
-    row_index_num = [x+56 for x in init_row_index_num]
-
-row_list = [sudoku_board[i] for i in row_index_num]
-
-row_rules_met = is_within_sudoku_rules(row_list)
+#Identify which row to check
+row_rules_met = check_row(current_index, sudoku_board)
 
 #identify which column to check
-#get index of number calculate remainder of index when divided by 9
-remainder_27 = current_index % 27
-
-#index numbers for columns
-if remainder_27 in [0,3,6]:
-    col_index_num = [ 0,  3,  6, 27, 30, 33, 54, 57, 60]
-elif remainder_27 in [1,4,7]:
-    col_index_num = [ 1,  4,  7, 28, 31, 34, 55, 58, 61]
-elif remainder_27 in [2,5,8]:
-    col_index_num = [ 2,  5,  8, 29, 32, 35, 56, 59, 62]
-elif remainder_27 in [9,12,15]:
-    col_index_num = [ 9, 12, 15, 36, 39, 42, 63, 66, 69]
-elif remainder_27 in [10,13,16]:
-    col_index_num = [10, 13, 16, 37, 40, 43, 64, 67, 70]
-elif remainder_27 in [11,14,17]:
-    col_index_num = [11, 14, 17, 38, 41, 44, 65, 68, 71]
-elif remainder_27 in [18,21,24]:
-    col_index_num = [18, 21, 24, 45, 48, 51, 72, 75, 78]
-elif remainder_27 in [19,22,25]:
-    col_index_num = [19, 22, 25, 46, 49, 52, 73, 76, 79]
-elif remainder_27 in [20,23,26]:
-    col_index_num = [20, 23, 26, 47, 50, 53, 74, 77, 80]
-
-col_list = [sudoku_board[i] for i in col_index_num]
-
-#check if rules have been met
-col_rules_met = is_within_sudoku_rules(col_list)
-
+col_rules_met = check_col(current_index, sudoku_board)
 #Check rules met for 3x3, row and column
 rules_met = square_rules_met and row_rules_met and col_rules_met
 
+#if 3x3, row and column are all fine, move to next cell and add 1...
 #if rules met, move to next cell
 
 
